@@ -148,7 +148,7 @@ def UDF_ExecuteSonarQubeRules()
 {	
 	try{
 		echo 'SonarQube Rules Execution started'
-		//bat 'mvn sonar:sonar'
+		bat 'mvn sonar:sonar'
 		echo 'SonarQube Rules Execution Completed'	
 	} catch(error) {
 		throw(error)
