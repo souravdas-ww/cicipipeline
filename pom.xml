@@ -36,8 +36,10 @@
 			            <muleVersion>${muleVersion}</muleVersion>
 			            <applicationName>${applicationName}</applicationName>
 			            <environment>${environment}</environment>
+                        <workerType>${workerType}</workerType>
+                        <workers>${workers}</workers>
 			            <properties>
-			                <env>${environment}</env>
+			                <env>${env}</env>
 			            </properties>
 			        </cloudHubDeployment>				
 				</configuration>

@@ -3,7 +3,7 @@
 /**
  *
  * Author:    Naresh Manthrabuddi
- * Created:   07.11.2019
+ * Created:   12.12.2019
  * 
  **/
 
@@ -13,7 +13,7 @@ pipeline {
 	stages {
 	    stage('Pipeline gets Started') {		
 			steps {
-			   echo 'Maruthi Project CI/CD Pipeline Started'
+			   echo 'Oasis Project CI/CD Pipeline Started'
 			}
 	    }
 	}
@@ -39,7 +39,7 @@ node {
 	properties([
      parameters([
        choiceParam(
-         choices: 'DEVELOPMENT\nSIT\nUAT\nPRODUCTION',
+         choices: 'DEV\nSIT\nUAT,
             description: 'Please select the ENVIRONMENT for Deployment',
             name: 'ENVIRONMENT'
        ),
@@ -61,28 +61,18 @@ node {
        choiceParam(
          choices: '0.1\n0.2\n1\n2\n4\n8\n16',
             description: 'Please select the vCores for Deployment?',
-            name: 'VCORES'
+            name: 'WORKERTYPE'
        ),
        string(
 		   name: 'APPLICATION_NAME', 
 		   defaultValue: 'cicd-demo', 
 		   description: 'Please enter the application name for CloudHub Deployment?'
 	   ),
-       choiceParam(
-         choices: 'DEV_CREDENTIAL_ID\nSIT_CREDENTIAL_ID\nPROD_CREDENTIAL_ID',
-            description: 'Please select the vCores for Deployment?',
-            name: 'ANYPOINT_CREDENTIAL_ID'
-       ),
        string(
 		   name: 'ANYPOINT_ORGANIZATION', 
-		   defaultValue: 'LnD', 
+		   defaultValue: 'Warehouse Fashions', 
 		   description: 'Please provide CloudHub Anypoint Organization name to deploy?'
-	   ),
-	   choiceParam(
-         choices: 'DEV\nSIT\nUAT\nPROD',
-            description: 'Please select the Mule Cloudhub Anypoint Environment to deploy?',
-            name: 'ANYPOINT_ENVIRONMENT'
-       )
+	   )
      ])
     ])
 
@@ -179,9 +169,9 @@ def UDF_DeployToCloudHub() {
 	v_buildMechanism ="${params.BUILD_MECHANISM}"
 	v_muleRuntimeEnvironment ="${params.MULE_RUNTIME_VERSION}"
 	v_workers = "${params.WORKERS}"
-	v_cores = "${params.VCORES}"
+	v_cores = "${params.WORKERTYPE}"
 	v_applicationName = "${params.APPLICATION_NAME}"
-	v_anypointCredentialID = "${params.ANYPOINT_CREDENTIAL_ID}"
+	v_anypointCredentialID = ""
 	v_anypointOrganization = "${params.ANYPOINT_ORGANIZATION}"
 	v_anypointEnvironment = "${params.ANYPOINT_ENVIRONMENT}"
 	v_muleEvn = ""
@@ -191,34 +181,32 @@ def UDF_DeployToCloudHub() {
 	v_package = UDF_GetPOMData("${env.WORKSPACE}/pom.xml","packaging")
 	v_downloadFilePath = "${env.WORKSPACE}\\target\\${v_artifactId}-${v_version}-${v_package}.jar"	
 
+	if("${params.ENVIRONMENT}" == 'DEV') {
+
+		v_anypointCredentialID = '2485368e-fd54-44eb-a655-2dbab025daa2'
+
+	} else if("${params.ENVIRONMENT}" == 'SIT') {
+
+		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
+
+	} else if("${params.ENVIRONMENT}" == 'UAT') {
+
+		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
+	}
+
 	echo "ENVIRONMENT is : ${v_environment}"
 	echo "BUILD_MECHANISM is : ${v_buildMechanism}"
 	echo "MULE_RUNTIME_VERSION is : ${v_muleRuntimeEnvironment}"
 	echo "WORKERS : ${v_workers}"
-	echo "VCORES : ${v_cores}"
+	echo "WORKERTYPE : ${v_cores}"
 	echo "APPLICATION_NAME is : ${v_applicationName}"
 	echo "ANYPOINT_ORGANIZATION is : ${v_anypointOrganization}"
-	echo "ANYPOINT_ENVIRONMENT is : ${v_anypointEnvironment}"	
 	echo "Environment Workspace is : ${env.WORKSPACE}"	
 	echo "Download File Path is : ${v_downloadFilePath}"
-	
-	if("${params.ANYPOINT_CREDENTIAL_ID}" == 'DEV_CREDENTIAL_ID') {
-
-		v_anypointCredentialID = 'bccc9153-9fda-40b4-b266-70fbbb0176c8'
-
-	} else if("${params.ANYPOINT_CREDENTIAL_ID}" == 'SIT_CREDENTIAL_ID') {
-
-		v_anypointCredentialID= 'bccc9153-9fda-40b4-b266-70fbbb0176c8'
-
-	} else if("${params.ANYPOINT_CREDENTIAL_ID}" == 'PROD_CREDENTIAL_ID') {
-
-		v_anypointCredentialID= 'bccc9153-9fda-40b4-b266-70fbbb0176c8'
-	}
-
 	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
 
 	withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
-		bat "mvn deploy -DmuleDeploy -DskipTests=true -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_anypointEnvironment} -DbusinessGroup=${v_anypointOrganization} -Dworkers=${v_workers} -Dcores=${v_cores} -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
+		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=${v_anypointOrganization} -Dworkers=${v_workers} -DworkerType=${v_cores} -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
 	}
 }
 
