@@ -206,12 +206,7 @@ def UDF_DeployToCloudHub() {
 	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
 
 	withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
-
-		sh """
-			export ANYPOINT_PASSWORD =${ANYPOINT_PASSWORD}
-			export ANYPOINT_USERNAME =${ANYPOINT_USERNAME}
-			mvn deploy -DmuleDeploy -Denvironment="${v_environment}" -DbusinessGroup="${v_anypointOrganization}" -Dworkers="${v_workers}" -DworkerType="${v_cores}" -DmuleVersion="${v_muleRuntimeEnvironment}" -DapplicationName="${v_applicationName}"
-		"""
+		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup='Warehouse Fashions' -Dworkers=${v_workers} -DworkerType=${v_cores} -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
 	}
 }
 
