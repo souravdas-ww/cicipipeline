@@ -82,11 +82,11 @@ node {
 				UDF_BuildSourceCode()
 					
 			stage 'Notification'
-				SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","success")
+				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","success")
 				
 		} catch(error) {
 			throw(error)
-			SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+			SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 
 		}		
 	} else if(params.BUILD_MECHANISM == 'BUILD-MUNITS-SONAR') {
@@ -98,11 +98,11 @@ node {
 				UDF_ExecuteSonarQubeRules()
 					
 			stage 'Notification'
-				SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","success")
+				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","success")
 
 		} catch(error) {
 			throw(error)
-			SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+			SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 		}
 	} else if(params.BUILD_MECHANISM == 'BUILD-MUNITS-SONAR-RELEASE') {
 		try{
@@ -116,10 +116,10 @@ node {
 				UDF_DeployToCloudHub()
 
 			stage 'Notification'
-				SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")	
+				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")	
 		} catch(error) {
 			throw(error)
-			SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+			SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 		}
 	}
 }
@@ -136,7 +136,7 @@ def UDF_BuildSourceCode()
 		echo 'Build Completed'		
 	}catch(error) {
 		throw(error)
-		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 	}
 }
 
@@ -152,7 +152,7 @@ def UDF_ExecuteSonarQubeRules()
 		echo 'SonarQube Rules Execution Completed'	
 	} catch(error) {
 		throw(error)
-		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 	}
 }
    
@@ -225,7 +225,7 @@ def UDF_GetGitRepoName(){
 	}catch(error)
 	{
 		throw(error)
-		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 	}
 }
 
@@ -243,7 +243,7 @@ def UDF_GetPOMData(udfp_PomName, udfp_PropertyName){
 	}catch(error)
 	{
 		throw(error)
-		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
+		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
 	}
 }
 
@@ -266,9 +266,9 @@ def SendEmail(udfp_ToAddress, udfp_FromAddress, udfp_Status)
 		/*
 		mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) ${body}",
 				body: "It appears that ${env.BUILD_URL} is ${body}",
-				  to: "naresh.manthrabuddi@whishworks.com",
-			 replyTo: "naresh.manthrabuddi@whishworks.com",
-				from: "naresh.manthrabuddi@whishworks.com"
+				  to: "michal.giela@oasis-warehouse.com",
+			 replyTo: "webmaster@oasis-stores.com",
+				from: "Jenkins@oasis-stores.com"
 		*/
 				
 	}catch(error)
