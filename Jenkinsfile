@@ -192,6 +192,10 @@ def UDF_DeployToCloudHub() {
 	} else if("${params.ENVIRONMENT}" == 'UAT') {
 
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
+	
+	} else if("${params.ENVIRONMENT}" == 'PROD') {
+
+		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 	}
 
 	echo "ENVIRONMENT is : ${v_environment}"
