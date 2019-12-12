@@ -148,7 +148,7 @@ def UDF_ExecuteSonarQubeRules()
 {	
 	try{
 		echo 'SonarQube Rules Execution started'
-		bat 'mvn sonar:sonar'
+		//bat 'mvn sonar:sonar'
 		echo 'SonarQube Rules Execution Completed'	
 	} catch(error) {
 		throw(error)
@@ -209,7 +209,7 @@ def UDF_DeployToCloudHub() {
 
 		def org_param = ${v_anypointOrganization}
 
-		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup='''+org_param+''' -Dworkers=${v_workers} -DworkerType=${v_cores} -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
+		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=${v_anypointOrganization} -Dworkers=${v_workers} -DworkerType=${v_cores} -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
 	}
 }
 
