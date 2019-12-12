@@ -142,7 +142,7 @@ def UDF_BuildSourceCode()
 {	
 	try	{
 		echo 'Build is Starting'
-		bat 'mvn -e -X -U clean package'	
+		bat 'mvn clean package'	
 		echo 'Build Completed'		
 	}catch(error) {
 		throw(error)
