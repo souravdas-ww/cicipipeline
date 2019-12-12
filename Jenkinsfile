@@ -3,17 +3,17 @@
 /**
  *
  * Author:    Naresh Manthrabuddi
- * Created:   24.07.2019
- *
+ * Created:   07.11.2019
+ * 
  **/
 
 pipeline {
   agent any
-
+  
 	stages {
-	    stage('Pipeline gets Started with log read') {
+	    stage('Pipeline gets Started') {		
 			steps {
-			   echo 'OASIS Project Pipeline Started'
+			   echo 'Maruthi Project CI/CD Pipeline Started'
 			}
 	    }
 	}
@@ -25,7 +25,6 @@ node {
 	def v_muleRuntimeEnvironment =""
 	def v_workers = ""
 	def v_cores = ""
-	def v_appExists= ""
 	def v_applicationName = ""
 	def v_anypointCredentialID = ""
 	def v_anypointOrganization = ""
@@ -36,12 +35,11 @@ node {
 	def v_version = ""
 	def v_package = ""
 	def v_downloadFilePath = ""
-	def v_jenkinsLogPath = ""
 
 	properties([
      parameters([
        choiceParam(
-         choices: 'DEV\nSIT\nUAT\nPROD',
+         choices: 'DEVELOPMENT\nSIT\nUAT\nPRODUCTION',
             description: 'Please select the ENVIRONMENT for Deployment',
             name: 'ENVIRONMENT'
        ),
@@ -51,7 +49,7 @@ node {
             name: 'BUILD_MECHANISM'
        ),
        choiceParam(
-         choices: '4.1.3\n4.1.4\n4.1.5\n4.2.0',
+         choices: '4.1.6\n4.2.0\n4.2.1',
             description: 'Please select mule runtime version for Deployment?',
             name: 'MULE_RUNTIME_VERSION'
        ),
@@ -65,14 +63,9 @@ node {
             description: 'Please select the vCores for Deployment?',
             name: 'VCORES'
        ),
-       choiceParam(
-         choices: 'YES\nNO',
-            description: 'Is application existed on cloud?/Are you re-deploying application on Cloud?',
-            name: 'APP_EXISTS'
-       ),
        string(
-		   name: 'APPLICATION_NAME',
-		   defaultValue: 's-oasis-next-api',
+		   name: 'APPLICATION_NAME', 
+		   defaultValue: 'cicd-demo', 
 		   description: 'Please enter the application name for CloudHub Deployment?'
 	   ),
        choiceParam(
@@ -81,13 +74,13 @@ node {
             name: 'ANYPOINT_CREDENTIAL_ID'
        ),
        string(
-		   name: 'ANYPOINT_ORGANIZATION',
-		   defaultValue: 'Oasis Fashion',
+		   name: 'ANYPOINT_ORGANIZATION', 
+		   defaultValue: 'LnD', 
 		   description: 'Please provide CloudHub Anypoint Organization name to deploy?'
 	   ),
 	   choiceParam(
          choices: 'DEV\nSIT\nUAT\nPROD',
-            description: 'Please select the Cloudhub Anypoint Environment to deploy?',
+            description: 'Please select the Mule Cloudhub Anypoint Environment to deploy?',
             name: 'ANYPOINT_ENVIRONMENT'
        )
      ])
@@ -95,37 +88,37 @@ node {
 
 	if(params.BUILD_MECHANISM == 'BUILD-MUNITS') {
 		try{
-			stage 'Code Build & MUnits Execution'
+			stage 'Code Build & MUnits Execution'	
 				UDF_BuildSourceCode()
-
+					
 			stage 'Notification'
-				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","success")
-
+				SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","success")
+				
 		} catch(error) {
 			throw(error)
-			SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+			SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 
-		}
+		}		
 	} else if(params.BUILD_MECHANISM == 'BUILD-MUNITS-SONAR') {
 		try{
-			stage 'Code Build & MUnits Execution'
+			stage 'Code Build & MUnits Execution'	
 				UDF_BuildSourceCode()
-
+				
 			stage 'SonarQube Analysis'
 				UDF_ExecuteSonarQubeRules()
-
+					
 			stage 'Notification'
-				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","success")
+				SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","success")
 
 		} catch(error) {
 			throw(error)
-			SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+			SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 		}
 	} else if(params.BUILD_MECHANISM == 'BUILD-MUNITS-SONAR-RELEASE') {
 		try{
-			stage 'Code Build & MUnits Execution'
+			stage 'Code Build & MUnits Execution'	
 				UDF_BuildSourceCode()
-
+				
 			stage 'SonarQube Analysis'
 				UDF_ExecuteSonarQubeRules()
 
@@ -133,10 +126,10 @@ node {
 				UDF_DeployToCloudHub()
 
 			stage 'Notification'
-				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+				SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")	
 		} catch(error) {
 			throw(error)
-			SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+			SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 		}
 	}
 }
@@ -146,14 +139,14 @@ BUILD - STAGE
 This function provides the functionality to build your clode
 */
 def UDF_BuildSourceCode()
-{
+{	
 	try	{
 		echo 'Build is Starting'
-		sh 'mvn -U install -DskipTests=true'
-		echo 'Build Completed'
+		bat 'mvn -e -X -U clean package'	
+		echo 'Build Completed'		
 	}catch(error) {
 		throw(error)
-		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 	}
 }
 
@@ -162,25 +155,23 @@ SONARQUBE - STAGE
 This function provides functionality to do the SONAR Analysis
 */
 def UDF_ExecuteSonarQubeRules()
-{
+{	
 	try{
 		echo 'SonarQube Rules Execution started'
-		withSonarQubeEnv('SonarServer-Local') {
-			sh 'mvn sonar:sonar'
-		}
-		echo 'SonarQube Rules Execution Completed'
+		bat 'mvn sonar:sonar'
+		echo 'SonarQube Rules Execution Completed'	
 	} catch(error) {
 		throw(error)
-		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 	}
 }
-
+   
 /*
 DEPLOY STAGE
 This function provides functionality to deploy the application package(zip file) to CloudHub Runtime
 */
 
-def UDF_DeployToCloudHub() {
+def UDF_DeployToCloudHub() {	
 
 	echo "###### Application Deployment Stage ######"
 
@@ -189,160 +180,71 @@ def UDF_DeployToCloudHub() {
 	v_muleRuntimeEnvironment ="${params.MULE_RUNTIME_VERSION}"
 	v_workers = "${params.WORKERS}"
 	v_cores = "${params.VCORES}"
-	v_appExists= "${params.APP_EXISTS}"
 	v_applicationName = "${params.APPLICATION_NAME}"
 	v_anypointCredentialID = "${params.ANYPOINT_CREDENTIAL_ID}"
 	v_anypointOrganization = "${params.ANYPOINT_ORGANIZATION}"
-	v_AnypointEnvironment = "${params.ANYPOINT_ENVIRONMENT}"
+	v_anypointEnvironment = "${params.ANYPOINT_ENVIRONMENT}"
 	v_muleEvn = ""
 	v_encryptKey = ""
 	v_artifactId = UDF_GetPOMData("${env.WORKSPACE}/pom.xml","artifactId")
 	v_version = UDF_GetPOMData("${env.WORKSPACE}/pom.xml","version")
 	v_package = UDF_GetPOMData("${env.WORKSPACE}/pom.xml","packaging")
-	v_downloadFilePath = "${env.WORKSPACE}\\target\\${v_artifactId}-${v_version}-${v_package}.jar"
-	v_jenkinsLogPath = "${JENKINS_HOME}\\jobs\\${v_applicationName}\\branches\\${JOB_BASE_NAME}\\builds\\${BUILD_NUMBER}\\log"
+	v_downloadFilePath = "${env.WORKSPACE}\\target\\${v_artifactId}-${v_version}-${v_package}.jar"	
 
 	echo "ENVIRONMENT is : ${v_environment}"
 	echo "BUILD_MECHANISM is : ${v_buildMechanism}"
 	echo "MULE_RUNTIME_VERSION is : ${v_muleRuntimeEnvironment}"
 	echo "WORKERS : ${v_workers}"
 	echo "VCORES : ${v_cores}"
-	echo "APP_EXISTS is : ${v_appExists}"
 	echo "APPLICATION_NAME is : ${v_applicationName}"
-	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
 	echo "ANYPOINT_ORGANIZATION is : ${v_anypointOrganization}"
-	echo "ANYPOINT_ENVIRONMENT is : ${v_AnypointEnvironment}"
-	echo "Environment Workspace is : ${env.WORKSPACE}"
+	echo "ANYPOINT_ENVIRONMENT is : ${v_anypointEnvironment}"	
+	echo "Environment Workspace is : ${env.WORKSPACE}"	
 	echo "Download File Path is : ${v_downloadFilePath}"
-	echo "Jenkins log path : ${v_jenkinsLogPath}"
+	
+	if("${params.ANYPOINT_CREDENTIAL_ID}" == 'DEV_CREDENTIAL_ID') {
 
-	echo "BUILD_NUMBER :: ${BUILD_NUMBER}"
-	echo "BUILD_ID :: ${BUILD_ID}"
-	echo "BUILD_DISPLAY_NAME :: ${BUILD_DISPLAY_NAME}"
-	echo "JOB_NAME :: ${JOB_NAME}"
-	echo "JOB_BASE_NAME :: ${JOB_BASE_NAME}"
-	echo "BUILD_TAG :: ${BUILD_TAG}"
-	echo "EXECUTOR_NUMBER :: ${EXECUTOR_NUMBER}"
-	echo "NODE_NAME :: ${NODE_NAME}"
-	echo "NODE_LABELS :: ${NODE_LABELS}"
-	echo "WORKSPACE :: ${WORKSPACE}"
-	echo "JENKINS_HOME :: ${JENKINS_HOME}"
-	echo "JENKINS_URL :: ${JENKINS_URL}"
-	echo "BUILD_URL ::${BUILD_URL}"
-	echo "JOB_URL :: ${JOB_URL}"
+		v_anypointCredentialID = 'bccc9153-9fda-40b4-b266-70fbbb0176c8'
 
-	if("${params.ENVIRONMENT}" == 'DEV') {
+	} else if("${params.ANYPOINT_CREDENTIAL_ID}" == 'SIT_CREDENTIAL_ID') {
 
-		v_applicationName = "dev-${params.APPLICATION_NAME}"
-		v_muleEvn = 'dev'
-		v_encryptKey = 'MULESOFT_DEV'
-
-	} else if("${params.ENVIRONMENT}" == 'SIT') {
-
-		v_applicationName="sit-${params.APPLICATION_NAME}"
-		v_muleEvn = 'sit'
-		v_encryptKey = 'MULESOFT_SIT'
-
-	} else if("${params.ENVIRONMENT}" == 'PROD') {
-
-		v_applicationName="${params.APPLICATION_NAME}"
-		v_muleEvn = 'prod'
-		v_encryptKey = 'MULESOFT_PROD'
-
-	}
-
-	if("${params.ANYPOINT_CREDENTIAL_ID}" == 'DEV_CREDENTIAL_ID' || "${params.ANYPOINT_CREDENTIAL_ID}" == 'SIT_CREDENTIAL_ID') {
-
-		v_anypointCredentialID = 'TCHINTEGR'
+		v_anypointCredentialID= 'bccc9153-9fda-40b4-b266-70fbbb0176c8'
 
 	} else if("${params.ANYPOINT_CREDENTIAL_ID}" == 'PROD_CREDENTIAL_ID') {
 
-		v_anypointCredentialID= 'PCHINTEGR'
+		v_anypointCredentialID= 'bccc9153-9fda-40b4-b266-70fbbb0176c8'
 	}
 
-	echo "Application name after renaming: ${v_applicationName}"
-	echo "Mule Env is : ${v_muleEvn}"
-	echo "Encrypt Key : ${v_encryptKey}"
-	def v_output=""
+	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
 
-/*
-
-										def v_errorMessage = 'Update failed'
-				def outLog = new File("${v_jenkinsLogPath}")
-				def lines  = outLog.readLines()
-
-				if(lines.any(v_errorMessage)) {
-				  echo "BUILD FAILED"
-				} else {
-				  echo "BUILD SUCCESS"
-				}
-
-*/
-
-	if(APP_EXISTS == 'YES') {
-		try{
-				withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'password',usernameVariable: 'username')]) {
-					sh """
-						export ANYPOINT_USERNAME=${username}
-						export ANYPOINT_PASSWORD=${password}
-						echo "**************Password is : ${password}"
-						export ANYPOINT_ORG="${v_anypointOrganization}"
-						export ANYPOINT_ENV="${v_AnypointEnvironment}"
-						anypoint-cli runtime-mgr cloudhub-application modify "${v_applicationName}" \"${v_downloadFilePath}\" --property mule:env="${v_muleEvn}" --property encrypt:key="${v_encryptKey}" --workerSize "${v_cores}" --workers "${v_workers}" --runtime "${v_muleRuntimeEnvironment}"
-
-
-					"""
-				}
-
-			}catch(error){
-				throw(error)
-				echo "###### RE-DEPLOYMENT IS FAILED ######"
-				SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
-			}
-	} else {
-			try {
-					withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'password',usernameVariable: 'username')]) {
-
-						sh """
-							export ANYPOINT_USERNAME=${username}
-							export ANYPOINT_PASSWORD=${password}
-							export ANYPOINT_ORG="${v_anypointOrganization}"
-							export ANYPOINT_ENV="${v_AnypointEnvironment}"
-							anypoint-cli runtime-mgr cloudhub-application deploy "${v_applicationName}" \"${v_downloadFilePath}\" --property mule:env="${v_muleEvn}" --property encrypt:key="${v_encryptKey}" --workerSize "${v_cores}" --workers "${v_workers}" --runtime "${v_muleRuntimeEnvironment}"
-
-
-						"""
-					}
-				}catch(error){
-					throw(error)
-					echo "###### FRESH DEPLOYMENT IS FAILED ######"
-					SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
-				}
+	withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
+		bat "mvn deploy -DmuleDeploy -DskipTests=true -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_anypointEnvironment} -DbusinessGroup=${v_anypointOrganization} -Dworkers=${v_workers} -Dcores=${v_cores} -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
 	}
 }
+
 /*
 This function returns the repository details
 */
-def UDF_GetGitRepoName(){
+def UDF_GetGitRepoName(){	
 	try{
 	def tokens = "${env.JOB_NAME}".tokenize('/')
     String repo = tokens[tokens.size()-2]
-
-    //branch = tokens[tokens.size()-1]
-    //org = tokens[tokens.size()-3]
-
+	
+    //branch = tokens[tokens.size()-1]	
+    //org = tokens[tokens.size()-3]	
+	
 	return repo
 	}catch(error)
 	{
 		throw(error)
-		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 	}
 }
 
 /*
 This function returns the POM Data
 */
-def UDF_GetPOMData(udfp_PomName, udfp_PropertyName){
+def UDF_GetPOMData(udfp_PomName, udfp_PropertyName){	
 	try{
 	def resultVal = ""
 	def pomFile = readFile(udfp_PomName)
@@ -353,7 +255,7 @@ def UDF_GetPOMData(udfp_PomName, udfp_PropertyName){
 	}catch(error)
 	{
 		throw(error)
-		SendEmail("michal.giela@oasis-warehouse.com","Jenkins@oasis-stores.com","Failed")
+		SendEmail("naresh.manthrabuddi@whishworks.com","naresh.manthrabuddi@whishworks.com","Failed")
 	}
 }
 
@@ -364,7 +266,7 @@ def SendEmail(udfp_ToAddress, udfp_FromAddress, udfp_Status)
 {
 	try{
 	   String body = ""
-
+	   
 	   if(udfp_Status == "success")
 	   {
 		   body= "SUCCESS"
@@ -373,15 +275,16 @@ def SendEmail(udfp_ToAddress, udfp_FromAddress, udfp_Status)
 	   {
 		   body= "FAILED"
 	   }
-
+		/*
 		mail subject: "${env.JOB_NAME} (${env.BUILD_NUMBER}) ${body}",
 				body: "It appears that ${env.BUILD_URL} is ${body}",
-				  to: "michal.giela@oasis-warehouse.com",
-			 replyTo: "webmaster@oasis-stores.com",
-				from: "Jenkins@oasis-stores.com"
-
+				  to: "naresh.manthrabuddi@whishworks.com",
+			 replyTo: "naresh.manthrabuddi@whishworks.com",
+				from: "naresh.manthrabuddi@whishworks.com"
+		*/
+				
 	}catch(error)
-	{
+	{		
 		throw(error)
 	}
 }
