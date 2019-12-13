@@ -196,7 +196,7 @@ def UDF_DeployToCloudHub() {
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 	
 	} else if("${params.ENVIRONMENT}" == 'PROD') {
-		v_muleEnv = ''
+		v_muleEnv = 'prod-'
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 	}
 
