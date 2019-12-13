@@ -183,17 +183,17 @@ def UDF_DeployToCloudHub() {
 
 	if("${params.ENVIRONMENT}" == 'DEV') {
 		
-		v_applicationName = 'dev-'${v_applicationName}
+		v_applicationName = 'dev-${v_applicationName}'
 		v_anypointCredentialID = '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'SIT') {
 		
-		v_applicationName = 'sit-'${v_applicationName}
+		v_applicationName = 'sit-${v_applicationName}'
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'UAT') {
 		
-		v_applicationName = 'uat-'${v_applicationName}
+		v_applicationName = 'uat-${v_applicationName}'
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 	
 	} else if("${params.ENVIRONMENT}" == 'PROD') {
