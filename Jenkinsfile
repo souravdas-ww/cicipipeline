@@ -35,6 +35,7 @@ node {
 	def v_version = ""
 	def v_package = ""
 	def v_downloadFilePath = ""
+	def v_evnPrefix = ""
 
 	properties([
      parameters([
@@ -182,15 +183,18 @@ def UDF_DeployToCloudHub() {
 	v_downloadFilePath = "${env.WORKSPACE}\\target\\${v_artifactId}-${v_version}-${v_package}.jar"	
 
 	if("${params.ENVIRONMENT}" == 'DEV') {
-
+		
+		v_evnPrefix = 'dev-'
 		v_anypointCredentialID = '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'SIT') {
-
+		
+		v_evnPrefix = 'sit-'
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'UAT') {
-
+		
+		v_evnPrefix = 'uat-'
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 	
 	} else if("${params.ENVIRONMENT}" == 'PROD') {
@@ -203,14 +207,14 @@ def UDF_DeployToCloudHub() {
 	echo "MULE_RUNTIME_VERSION is : ${v_muleRuntimeEnvironment}"
 	echo "WORKERS : ${v_workers}"
 	echo "WORKERTYPE : ${v_cores}"
-	echo "APPLICATION_NAME is : ${v_applicationName}"
+	echo "APPLICATION_NAME is : ${v_evnPrefix}.${v_applicationName}"
 	echo "ANYPOINT_ORGANIZATION is : ${v_anypointOrganization}"
 	echo "Environment Workspace is : ${env.WORKSPACE}"	
 	echo "Download File Path is : ${v_downloadFilePath}"
 	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
 
 	withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
-		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=\"${v_anypointOrganization}\" -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
+		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=\"${v_anypointOrganization}\" -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_evnPrefix}.${v_applicationName}"
 	}
 }
 
