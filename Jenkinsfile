@@ -35,6 +35,7 @@ node {
 	def v_version = ""
 	def v_package = ""
 	def v_downloadFilePath = ""
+	def v_muleEnv = ""
 
 	properties([
      parameters([
@@ -183,6 +184,7 @@ def UDF_DeployToCloudHub() {
 
 	if("${params.ENVIRONMENT}" == 'DEV') {
 
+		v_muleEnv = 'dev-'
 		v_anypointCredentialID = '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'SIT') {
@@ -208,9 +210,10 @@ def UDF_DeployToCloudHub() {
 	echo "Environment Workspace is : ${env.WORKSPACE}"	
 	echo "Download File Path is : ${v_downloadFilePath}"
 	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
+	echo "MULE_ENVIRONMENT is : ${v_muleEnv}"
 
 	withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
-		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=\"${v_anypointOrganization}\" -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
+		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=\"${v_anypointOrganization}\" -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_muleEnv}${v_applicationName}"
 	}
 }
 
