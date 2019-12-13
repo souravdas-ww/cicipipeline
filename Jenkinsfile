@@ -212,9 +212,21 @@ def UDF_DeployToCloudHub() {
 	echo "ANYPOINT_CREDENTIAL_ID is : ${v_anypointCredentialID}"
 	echo "MULE_ENVIRONMENT is : ${v_muleEnv}"
 
-	withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
+	if("${params.ENVIRONMENT}" == 'PROD') {
+
+			withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
+		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=\"${v_anypointOrganization}\" -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_applicationName}"
+	}
+
+	}	else {
+	
+		withCredentials([usernamePassword(credentialsId: "${v_anypointCredentialID}",passwordVariable: 'ANYPOINT_PASSWORD',usernameVariable: 'ANYPOINT_USERNAME')]) {
 		bat "mvn deploy -DmuleDeploy -Danypoint.username=${ANYPOINT_USERNAME} -Danypoint.password=${ANYPOINT_PASSWORD} -Denvironment=${v_environment} -DbusinessGroup=\"${v_anypointOrganization}\" -DmuleVersion=${v_muleRuntimeEnvironment} -DapplicationName=${v_muleEnv}${v_applicationName}"
 	}
+	
+	}
+
+
 }
 
 /*
