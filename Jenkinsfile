@@ -35,7 +35,7 @@ node {
 	def v_version = ""
 	def v_package = ""
 	def v_downloadFilePath = ""
-	
+
 	properties([
      parameters([
        choiceParam(
@@ -182,15 +182,15 @@ def UDF_DeployToCloudHub() {
 	v_downloadFilePath = "${env.WORKSPACE}\\target\\${v_artifactId}-${v_version}-${v_package}.jar"	
 
 	if("${params.ENVIRONMENT}" == 'DEV') {
-		
+
 		v_anypointCredentialID = '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'SIT') {
-		
+
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 
 	} else if("${params.ENVIRONMENT}" == 'UAT') {
-		
+
 		v_anypointCredentialID= '2485368e-fd54-44eb-a655-2dbab025daa2'
 	
 	} else if("${params.ENVIRONMENT}" == 'PROD') {
