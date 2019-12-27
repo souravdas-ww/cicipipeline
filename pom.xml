@@ -19,9 +19,9 @@
 	<munit.version>2.1.4</munit.version>
     </properties>
 <scm>
-    <connection>scm:git:git@github.com:souravdas-ww/cicd-demo.git</connection>
-    <developerConnection>scm:git:git@github.com:souravdas-ww/cicd-demo.git</developerConnection>
-    <url>http://github.com/souravdas-ww/cicd-demo</url>
+    <connection>scm:git:git@github.com:souravdas-ww/cicipipeline.git</connection>
+    <developerConnection>scm:git:git@github.com:souravdas-ww/cicipipeline.git</developerConnection>
+    <url>http://github.com/souravdas-ww/cicipipeline</url>
   </scm>
 	<build>
 		<plugins>
