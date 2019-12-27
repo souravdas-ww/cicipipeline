@@ -18,7 +18,11 @@
         <anypoint.password/>		
 	<munit.version>2.1.4</munit.version>
     </properties>
-
+<scm>
+    <connection>scm:git:git@github.com:souravdas-ww/cicd-demo.git</connection>
+    <developerConnection>scm:git:git@github.com:souravdas-ww/cicd-demo.git</developerConnection>
+    <url>http://github.com/souravdas-ww/cicd-demo</url>
+  </scm>
 	<build>
 		<plugins>
 			<plugin>
@@ -43,6 +47,11 @@
 			            </properties>
 			        </cloudHubDeployment>				
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>3.0.0-M1</version>
 			</plugin>
 		<plugin>
                 <groupId>com.mulesoft.munit.tools</groupId>
